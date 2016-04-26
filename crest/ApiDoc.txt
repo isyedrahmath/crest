@@ -1,1 +1,22 @@
-################# API Documentations ############################3
+################# API Documentations ############################
+
+api url : http://localhost:8080/sampleapp/test
+method : post
+request body : 
+{
+  username : testuser,
+  password : xxxxxx
+}
+
+response body:
+{
+  status:"success",
+  code:100,
+  message:"Authentication success"
+}
+response body:
+{
+  status:"failed",
+  code:101,
+  message:"Authentication failed"
+}
