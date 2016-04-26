@@ -1,0 +1,137 @@
+create keyspace monitoring
+with rep[lication = { 'class' : 'SimpleStrategy', 'replication_factor' : 2 } -- this should be tuned for production by data engineering team
+
+-------current table sets---------------------
+/*
+server stats from site scope
+end user experience from Aternity
+transactions monitoring from slunk
+*/
+-----------------------------------------------
+----------------tables for server stats from sitescope--------------------------
+
+drop table monitoring.servers_instant;    -- table for easy dashboard selects. inserts should use a TTL of the period needed based on dashboard update frequency and data update frequency
+create table monitoring.servers_instant
+(
+	systemName text                    
+	,serverName text                   
+	,datetime	timestamp
+        ,date	timestamp
+	,cpuUtilization double
+	,memoryUtilization	double
+ 	,iowaits	double
+	,primary key ((systemName), serverName datetime)
+) with clustering order by (serverName asc, datetime desc)
+;
+
+drop table monitoring.servers_hist;        -- table for archiving all server stats to be used for later analysis
+create table monitoring.servers_hist
+(
+	systemName text
+	,serverName text
+	,datetime	timestamp
+	,date	timestamp
+	,cpuUtilization double
+	,memoryUtilization	double
+ 	,iowaits	double
+	,primary key ((systemName, date), serverName, datetime)
+) with clustering order by (serverName asc, datetime desc)
+;
+
+----------------end tables for server stats from sitescope--------------------------
+
+----------------tables for end user experiance from Aternity--------------------------
+
+drop table monitoring.eux_instant;
+create table monitoring.eux_instant
+(
+	systemName text
+	,serverName text
+	,datetime	timestamp
+	,date timestamp
+	,actionName text
+	,userId text
+	,responseTime double
+	,primary key ((systemName), serverName, datetime, actionName)
+) with clustering order by (serverName asc, datetime desc, actionName desc)
+;
+
+drop table monitoring.eux_hist;
+create table monitoring.eux_hist
+(
+	systemName text
+	,serverName text
+	,datetime	timestamp
+	,date timestamp
+	,actionName text
+	,userId text
+	,responseTime double
+	,primary key ((systemName, date), datetime, serverName, actionName)
+) with clustering order by (datetime desc, serverName asc, actionName desc)
+;
+
+
+----------------end of tables for end user experiance from Aternity--------------------------
+
+----------------tables for api monitoring--------------------------
+
+drop table monitoring.api_instant;
+create table monitoring.api_instant
+(
+	serverName text
+	,datetime	timestamp
+	,date timestamp
+	,apiName 	text
+	,apiResult 	text
+        ,apiUserKey      text
+	,apiResponseTime	 double
+	,primary key ((apiName), serverName, datetime)
+) with clustering order by (serverName asc, datetime desc)
+;
+
+drop table monitoring.api_hist;
+create table monitoring.api_hist
+(
+	serverName text
+	,datetime	timestamp
+	,date timestamp
+	,apiName 	text
+	,apiResult 	text
+	,apiUserKey     text
+	,apiResponseTime	 double
+	,primary key ((apiName, date), datetime, serverName)
+) with clustering order by (datetime desc, serverName asc)
+;
+
+----------------end of tables for api monitoring--------------------------
+
+-----------------tables for transactions monitoring from SPLUNK-----------------------
+
+create table monitoring.trxn_instant 
+(
+	serverName  text
+	,datetime   timestamp
+	,date       timestamp
+	,trxnName   text
+        ,trxnResponseTime    double
+	,trxnVolume          double
+	,primary Key ((serverName), trxnName, datetime)
+) with clustering order by (trxnName asc, datetime desc)
+;
+
+create table monitoring.trxn_hist 
+(
+	serverName  text
+	,datetime   timestamp
+	,date       timestamp
+	,trxnName   text
+        ,trxnResponseTime    double
+	,trxnVolume          double
+	,primary Key ((serverName, date), datetime, trxnName)
+) with clustering order by (datetime desc, trxnName asc)
+;
+
+
+-----------------end of tables for transactions monitoring from SPLUNK-----------------------
+
+
