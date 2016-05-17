@@ -14,13 +14,6 @@ import com.datastax.driver.core.Row;
 
 public interface OpusServices {
 	
-	
-	List<OpusTransactionDto> getTransactionsData(String csvFileName) throws OpusException;
-	
-	List<InfrastructureDTO> getInfrastructureData(String fileName) throws OpusException;
-	
-	List<InternalEUXDto> getInternalEUXData(String fileName) throws OpusException;
-	
 	Map<String,ArrayList<TxnResponse>> getAllInstantTxnDetails();
 	Map<String,ArrayList<TxnResponse>> getServerSpecificInstantTxnDetails(String servername);
 	
