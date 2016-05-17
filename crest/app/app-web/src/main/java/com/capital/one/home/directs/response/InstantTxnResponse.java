@@ -5,7 +5,14 @@ public class InstantTxnResponse {
 	private String serverName;
 	private Double responseTime;
 	private Double volume;
+	private String timeStamp;
 	
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+	public void setTimeStamp(String timeStamp) {
+		this.timeStamp = timeStamp;
+	}
 	public String getServerName() {
 		return serverName;
 	}

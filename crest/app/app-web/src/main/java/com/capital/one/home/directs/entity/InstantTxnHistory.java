@@ -6,8 +6,8 @@ import org.springframework.data.cassandra.mapping.Column;
 import org.springframework.data.cassandra.mapping.PrimaryKey;
 import org.springframework.data.cassandra.mapping.Table;
 
-@Table("trxn_instant")
-public class InstantTxn {
+@Table("trxn_hist")
+public class InstantTxnHistory {
 
 	@PrimaryKey
 	@Column("servername")
